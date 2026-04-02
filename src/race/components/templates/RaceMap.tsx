@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 
 import {
   GOOGLE_MAPS_API_KEY,
+  INFO_WINDOW_OFFSET_Y,
   MAP_CONTAINER_STYLE,
   MAP_DEFAULT_CENTER,
   MAP_DEFAULT_OPTIONS,
@@ -11,11 +12,7 @@ import {
 } from '@/race/constants/race.constants'
 import { clickedRaceAtom, hoveredRaceAtom } from '@/race/contexts/race.atoms'
 import { useFetchRaces } from '@/race/hooks/race.hooks'
-import {
-  getInfoWindowOptions,
-  getMarkerAnimation,
-  getMarkerIcon,
-} from '@/race/helpers/race.helpers'
+import { getMapMarkerAnimation, getMapMarkerIcon } from '@/race/helpers/race.helpers'
 
 export const RaceMap = () => {
   const { data: races = [] } = useFetchRaces()
@@ -24,14 +21,9 @@ export const RaceMap = () => {
   const [hoveredRace, setHoveredRace] = useAtom(hoveredRaceAtom)
 
   const center = useMemo(() => {
-    if (!clickedRace) {
-      return MAP_DEFAULT_CENTER
-    }
+    if (!clickedRace) return MAP_DEFAULT_CENTER
 
-    return {
-      lat: clickedRace.coordinates.lat,
-      lng: clickedRace.coordinates.lng,
-    }
+    return { lat: clickedRace.coordinates.lat, lng: clickedRace.coordinates.lng }
   }, [clickedRace])
 
   return (
@@ -44,21 +36,18 @@ export const RaceMap = () => {
           options={MAP_DEFAULT_OPTIONS}
         >
           {races.map(race => {
-            const isActive = clickedRace?.id === race.id
+            const isClicked = clickedRace?.id === race.id
             const isHovered = hoveredRace?.id === race.id
-            const isBouncing = isActive || isHovered
 
             return (
               <MarkerF
                 key={race.id}
-                position={{
-                  lat: race.coordinates.lat,
-                  lng: race.coordinates.lng,
-                }}
+                position={{ lat: race.coordinates.lat, lng: race.coordinates.lng }}
                 onClick={() => setClickedRace(race)}
                 onMouseOver={() => setHoveredRace(race)}
-                animation={getMarkerAnimation(isBouncing)}
-                icon={getMarkerIcon(isActive)}
+                onMouseOut={() => setHoveredRace(null)}
+                animation={getMapMarkerAnimation(isClicked, isHovered)}
+                icon={getMapMarkerIcon(isClicked)}
               />
             )
           })}
@@ -70,13 +59,15 @@ export const RaceMap = () => {
                 lng: clickedRace.coordinates.lng,
               }}
               onCloseClick={() => setClickedRace(null)}
-              options={getInfoWindowOptions()}
+              options={{
+                pixelOffset: window?.google
+                  ? new window.google.maps.Size(0, INFO_WINDOW_OFFSET_Y)
+                  : undefined,
+              }}
             >
-              <div className='max-w-xs space-y-2'>
-                <h3 className='text-sm font-semibold text-gray-900 leading-tight'>
-                  {clickedRace.title}
-                </h3>
-                <p className='text-xs text-gray-600 leading-relaxed'>{clickedRace.description}</p>
+              <div className='max-w-xs'>
+                <div className='text-base font-semibold'>{clickedRace.title}</div>
+                <p className=' text-sm text-gray-600'>{clickedRace.description}</p>
               </div>
             </InfoWindowF>
           )}

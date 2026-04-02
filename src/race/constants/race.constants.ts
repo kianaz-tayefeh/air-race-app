@@ -2,7 +2,11 @@ export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '
 export const ACTIVE_MARKER_SIZE = 50
 export const DEFAULT_MARKER_SIZE = 35
 export const MAP_ZOOM = 13
-export const INFO_WINDOW_OFFSET_Y = -60
+export const INFO_WINDOW_OFFSET_Y = -50
+
+export const MAP_HOVERED_ANIMATION = window?.google
+  ? window.google.maps.Animation.BOUNCE
+  : undefined
 
 // I have better idea to always render the center based on the average of all races marker
 // also we can customize the zoom level too based on the distance between markers.

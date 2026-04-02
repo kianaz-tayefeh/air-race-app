@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 
 import { clickedRaceAtom, hoveredRaceAtom } from '@/race/contexts/race.atoms'
-import { type RaceType } from '@/race/types/race.types'
+import type { RaceType } from '@/race/types/race.types'
 
 type Props = { race: RaceType }
 
@@ -14,7 +14,11 @@ export const RaceCard = (props: Props) => {
   const isSelected = clickedRace?.id === race.id
   const isHovered = hoveredRace?.id === race.id
 
-  const isActive = isSelected || isHovered
+  const classname = isSelected
+    ? 'border-black bg-black text-white'
+    : isHovered
+      ? 'border-gray-300 bg-gray-200 text-gray-900'
+      : 'border-gray-200 bg-white text-gray-900'
 
   return (
     <button
@@ -22,12 +26,11 @@ export const RaceCard = (props: Props) => {
       onClick={() => setClickedRace(race)}
       onMouseEnter={() => setHoveredRace(race)}
       onMouseLeave={() => setHoveredRace(null)}
-      style={isActive ? { backgroundColor: 'black', color: 'white' } : undefined}
-      className={`w-full rounded-2xl border p-4 text-left transition-all duration-200 shadow-sm hover:shadow-md ${
-        isActive ? 'border-black bg-black text-white' : 'border-gray-200 bg-white text-gray-900'
+      className={`w-full cursor-pointer rounded-2xl border p-4 text-left shadow-sm transition hover:shadow-md active:scale-[0.98] ${
+        classname
       }`}
     >
-      <div className={`mt-1 text-lg ${isActive ? 'font-bold' : 'font-semibold'}`}>{race.title}</div>
+      <div className='mt-1 text-lg font-semibold'>{race.title}</div>
       <div className='mt-1 text-sm opacity-80'>
         {race.country}, {race.address}
       </div>

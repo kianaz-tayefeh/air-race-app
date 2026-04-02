@@ -4,11 +4,10 @@ import { useAtom } from 'jotai'
 
 import {
   GOOGLE_MAPS_API_KEY,
-  INFO_WINDOW_OFFSET_Y,
   MAP_CONTAINER_STYLE,
   MAP_DEFAULT_CENTER,
   MAP_DEFAULT_OPTIONS,
-  MAP_ZOOM,
+  MAP_OPTIONS,
 } from '@/race/constants/race.constants'
 import { clickedRaceAtom, hoveredRaceAtom } from '@/race/contexts/race.atoms'
 import { useFetchRaces } from '@/race/hooks/race.hooks'
@@ -32,7 +31,7 @@ export const RaceMap = () => {
         <GoogleMap
           mapContainerStyle={MAP_CONTAINER_STYLE}
           center={center}
-          zoom={MAP_ZOOM}
+          zoom={MAP_OPTIONS.zoom}
           options={MAP_DEFAULT_OPTIONS}
         >
           {races.map(race => {
@@ -61,7 +60,7 @@ export const RaceMap = () => {
               onCloseClick={() => setClickedRace(null)}
               options={{
                 pixelOffset: window?.google
-                  ? new window.google.maps.Size(0, INFO_WINDOW_OFFSET_Y)
+                  ? new window.google.maps.Size(0, MAP_OPTIONS.infoWindow.offsetY)
                   : undefined,
               }}
             >

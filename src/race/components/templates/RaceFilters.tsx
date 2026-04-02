@@ -2,17 +2,30 @@ import { type ChangeEvent, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 
 import { DEFAULT_DEBOUNCE_TIME } from '@/core/constants/debounce.constants'
-import { RACE_DEFAULT_FILTERS, racesFiltersAtom } from '@/race/contexts/race.atoms'
+import {
+  RACE_DEFAULT_FILTERS,
+  racesFiltersAtom,
+  clickedRaceAtom,
+  hoveredRaceAtom,
+} from '@/race/contexts/race.atoms'
 import type { RaceCategoryFilterType } from '@/race/types/race.types'
 
 export const RaceFilters = () => {
   const [raceFilters, setRaceFilters] = useAtom(racesFiltersAtom)
+  const [, setClickedRace] = useAtom(clickedRaceAtom)
+  const [, setHoveredRace] = useAtom(hoveredRaceAtom)
 
   const [query, setQuery] = useState(raceFilters.query ?? '')
+
+  const resetSelectedStates = () => {
+    setClickedRace(null)
+    setHoveredRace(null)
+  }
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as RaceCategoryFilterType
 
+    resetSelectedStates()
     setRaceFilters(prev => ({
       ...prev,
       category: value,
@@ -20,6 +33,7 @@ export const RaceFilters = () => {
   }
 
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    resetSelectedStates()
     setQuery(event.target.value)
   }
 
@@ -36,6 +50,7 @@ export const RaceFilters = () => {
 
   const handleReset = () => {
     setRaceFilters(RACE_DEFAULT_FILTERS)
+    resetSelectedStates()
     setQuery('')
   }
 
@@ -70,6 +85,7 @@ export const RaceFilters = () => {
           className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
         />
       </div>
+
       <button
         onClick={handleReset}
         className='self-start rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:border-gray-400 md:self-auto'

@@ -1,9 +1,5 @@
 import { isInString } from '@/core/helpers/string.helpers'
-import {
-  ACTIVE_MARKER_SIZE,
-  DEFAULT_MARKER_SIZE,
-  MAP_MARKER_ICON_URL,
-} from '@/race/constants/race.constants'
+import { MAP_OPTIONS } from '@/race/constants/race.constants'
 import type { RaceFiltersType, RaceType } from '@/race/types/race.types'
 
 export const getFilteredRaces = (races: RaceType[], filters: RaceFiltersType): RaceType[] => {
@@ -27,9 +23,9 @@ export const getFilteredRaces = (races: RaceType[], filters: RaceFiltersType): R
 export const getMapMarkerIcon = (isClicked: boolean): google.maps.Icon | undefined => {
   if (!window?.google) return undefined
 
-  const size = isClicked ? ACTIVE_MARKER_SIZE : DEFAULT_MARKER_SIZE
+  const size = isClicked ? MAP_OPTIONS.marker.activeSize : MAP_OPTIONS.marker.defaultSize
   return {
-    url: MAP_MARKER_ICON_URL,
+    url: MAP_OPTIONS.marker.iconUrl,
     scaledSize: new window.google.maps.Size(size, size),
   }
 }

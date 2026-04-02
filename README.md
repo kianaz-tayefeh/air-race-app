@@ -53,3 +53,4 @@ Here I want to mention the way I was thinking when developing this code
 - also 100% I think we need clusters, why? because consider we have 10 events very close on map that is overlapping each other, then in different zoom levels we should have clusters
 - also for a real world project I think skills of the AI also mcbs should be shared inside project
 - also we can have a code conversion to have same code principles in the project
+- I skipped implementing city search via geocoding as it requires additional API setup and billing. Given that it was optional, I focused on the core functionality and kept the implementation lightweight.
